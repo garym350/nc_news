@@ -20,7 +20,9 @@ const ArticleList = () => {
         })
 },[])
 
-console.log(articles)
+if (loading){
+  return <p>Loading...</p>
+}
 
 return (
   <>
