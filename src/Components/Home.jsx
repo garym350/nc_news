@@ -13,13 +13,16 @@ function Home() {
         setArticle(articles[0]);}
                 },[articles]) /// square brackets - only runs when articles changes
   return (
-    <div>
-      <h2>HELLO</h2>
-      <Link to={`/article/${article.article_id}`}>Go To Article Page</Link>
-        <ArticleList setArticles={setArticles} articles={articles}/>
+  <div>
+  <h2>HELLO....</h2>
+  {article && (
+    <Link to={`/article/${article.article_id}`}>Go To Article Page</Link>
+  )}
+  <ArticleList setArticles={setArticles} articles={articles} />
+</div>
 
-    </div>
   );
 
 }
+
 export default Home;

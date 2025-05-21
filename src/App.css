@@ -5,11 +5,20 @@
   text-align: center;
 }
 
+
 .list {
     margin-bottom: 1rem;
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 5px black;
+}
+
+.article-image {
+  max-width: 50%;
+  height: auto;
+  border-radius: 10px;
+  margin-top: 1rem;
+  box-shadow: 0 4px 12px black;
 }
 
 .logo {
