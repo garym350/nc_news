@@ -1,17 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import ArticleList from './Components/ArticleList'
+
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './Components/Home';
+import ArticleCard from './Components/ArticleCard';
 
 function App() {
 
   return (
-    <>
-      <p>HELLO</p>
-      <ArticleList />
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/article/:article_id" element={<ArticleCard />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;

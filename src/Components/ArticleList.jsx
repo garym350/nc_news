@@ -1,9 +1,8 @@
 import React, { useEffect, useState} from "react"
 import ncNewsAPI from "../api"
 
-const ArticleList = () => {
+const ArticleList = ({setArticles, articles}) => {
 
-    const [articles, setArticles] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
 
@@ -20,7 +19,9 @@ const ArticleList = () => {
         })
 },[])
 
-console.log(articles)
+if (loading){
+  return <p>Loading...</p>
+}
 
 return (
   <>
