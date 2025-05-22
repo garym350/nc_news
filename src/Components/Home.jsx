@@ -1,28 +1,31 @@
 import "../../src/App.css";
-import ArticleList from "./ArticleList";
-import { Link } from 'react-router-dom';
-import React, { useEffect, useState} from "react"
+import { Link } from "react-router-dom";
+import Header from "./Header";
 
-function Home() {
-
-     const [articles, setArticles] = useState([])
-     const [article, setArticle] = useState([])
-
-    useEffect(()=>{
-        if(articles.length>0){
-        setArticle(articles[0]);}
-                },[articles]) /// square brackets - only runs when articles changes
+function Home({ article }) {
   return (
-  <div>
-  <h2>HELLO....</h2>
-  {article && (
-    <Link to={`/article/${article.article_id}`}>Go To Article Page</Link>
-  )}
-  <ArticleList setArticles={setArticles} articles={articles} />
-</div>
-
+    <div>
+      <Header />
+      <h2 className="mb-4 text-primary">Welcome to the News App!</h2>
+      <div className="list-group">
+        {/* <Link to={`/articles/`} className="list-group-item list-group-item-action">
+          Go To ArticleList Page
+        </Link>
+        <p></p> */}
+        <Link to={`/articles/${article.article_id}`} className="list-group-item list-group-item-action">
+          Go To ArticleCard Page
+        </Link>
+        <p></p>
+        <Link to={`/comments/${article.article_id}`} className="list-group-item list-group-item-action">
+          Go To CommentsList Page - initially using article defined in app.jsx
+        </Link>
+        <p></p>
+        <Link to={`/comment/1`} className="list-group-item list-group-item-action">
+          Go To CommentCard Page - initially showing comment defined in app.jsx
+        </Link>
+      </div>
+    </div>
   );
-
 }
 
 export default Home;
