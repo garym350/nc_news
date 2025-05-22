@@ -1,6 +1,7 @@
 import "../../src/App.css";
 import { Link } from "react-router-dom";
 import Header from "./Header";
+import ArticleCard from "./ArticleCard";
 
 function Home({ article }) {
   return (
@@ -8,6 +9,7 @@ function Home({ article }) {
       <Header />
       <h2 className="mb-4 text-primary">Welcome to the News App!</h2>
       <div className="list-group">
+        <ArticleCard article={article}/>
         {/* <Link to={`/articles/`} className="list-group-item list-group-item-action">
           Go To ArticleList Page
         </Link>
