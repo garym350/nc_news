@@ -1,17 +1,19 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom"; // corrected import
 
-
-const NavBar = () =>{
-    return(
-        <div>
-            <Link to="/">
-            <button>Home</button>
-            </Link>
-            <Link to="/articles/">
-            <button>Articles</button>
-            </Link>
-        </div>
-    )
-}
+const NavBar = () => {
+  return (
+    <div style={{ textAlign: "center", marginTop: "10px" }}>
+      <Link to="/">
+        <button>Home</button>
+      </Link>
+      <Link to="/articles/">
+        <button>Articles</button>
+      </Link>
+      <Link to="/articles/">
+        <button>Topics</button>
+      </Link>
+    </div>
+  );
+};
 
 export default NavBar;

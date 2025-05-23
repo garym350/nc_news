@@ -3,9 +3,10 @@ import ncNewsAPI from "../api";
 import ArticleCard from "./ArticleCard";
 import Header from "./Header";
 
-const ArticleList = ({ setArticles, articles }) => {
+const ArticleList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [articles, setArticles] = useState(null)
 
   useEffect(() => {
     ncNewsAPI
