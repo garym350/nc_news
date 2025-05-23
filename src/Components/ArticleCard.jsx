@@ -1,14 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
 import ncNewsAPI from "../api";
 import { Scrollbar } from "react-scrollbars-custom";
-
-
+import { useNavigate } from "react-router-dom";
 
 const ArticleCard = ({article}) => {
-
+const navigate=useNavigate();
 const [error, setError] = useState(null)
 const [articleVotes, setArticleVotes] = useState(article.votes);
+const [comments, setComments]=useState([])
+const [loading, setLoading] = useState(false)
+const [numComments, setNumComments] = useState(0)
+
+useEffect(() => {
+    setLoading(true)
+    ncNewsAPI
+      .get(`/api/articles/${article.article_id}/comments`)
+      .then((res) => {
+        setComments(res.data.comments);
+        setNumComments(res.data.comments.length);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.error("Error fetching comments data:", err);
+        setError("Failed to load articles...");
+      });
+  }, [article.article_id]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+  if (error) {
+    return <p style={{ color: "red" }}>ERROR LOADING</p>;
+  }
 
 let votes=articleVotes;
 
@@ -16,7 +40,7 @@ let votes=articleVotes;
     votes++
     setArticleVotes(votes)
     ncNewsAPI
-     .patch(`/api/articles/${article.article_id}`, { inc_votes: 1 })
+    .patch(`/api/articles/${article.article_id}`, { inc_votes: 1 })
     .then((response)=>{
       console.log("Vote updated")
     })
@@ -25,6 +49,7 @@ let votes=articleVotes;
     setError("Voting failed...")
     })
   }
+
 
   
   return (
@@ -47,7 +72,14 @@ let votes=articleVotes;
         {article.body}
       </Scrollbar>
       <p></p>
-      <button>Comments: 10</button>
+
+   
+      <button
+        className="list-group-item list-group-item-action"
+        onClick={() => navigate(`/commentspage/${article.article_id}`)}
+      >
+        {numComments} comments
+      </button>
       <p></p>
       <button onClick={handleVotes}>Votes: {articleVotes} - click to vote</button>
     </div>
