@@ -6,6 +6,8 @@ import CommentList from "./Components/CommentList";
 import ArticleList from "./Components/ArticleList";
 import CommentCard from "./Components/CommentCard";
 import CommentsPage from "./Components/CommentsPage";
+import TopicsPage from "./Components/TopicsPage";
+import TopicsArticlesPage from "./Components/TopicsArticlesPage" 
 import { UserProvider } from "./Contexts/UserContext";
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
       <Route path="/comments/:article_id" element={<CommentList />} />
       <Route path="/comment/:comment_id" element={<CommentCard />} />
       <Route path="/commentspage/:article_id" element={<CommentsPage />} />
+      <Route path="/topics/" element={<TopicsPage />} /> 
+       <Route path="/topics/:topic" element={<TopicsArticlesPage />} /> 
       </Routes>
       </UserProvider>
   );
