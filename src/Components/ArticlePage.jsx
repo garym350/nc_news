@@ -10,18 +10,9 @@ const ArticlePage = () => {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [numComments, setNumComments] = useState(null);
   const [votes, setVotes] = useState(null);
   const [votesUpdating, setVotesUpdating] = useState(null);
 
-  const { errorComments, loadingComments, comments } =
-    useArticleComments(article_id);
-
-  useEffect(() => {
-    if (comments) {
-      setNumComments(comments.length);
-    }
-  }, [comments]);
 
   useEffect(() => {
     ncNewsAPI
@@ -55,22 +46,6 @@ const ArticlePage = () => {
     );
   }
 
-  if (loadingComments) {
-    return (
-      <div>
-        <p>Loading comments...</p>
-      </div>
-    );
-  }
-
-  if (errorComments) {
-    return (
-      <div>
-        <p style={{ color: "red" }}>ERROR LOADING COMMENTS DATA</p>
-      </div>
-    );
-  }
-
   const handleVotes = () => {
     setVotes((votes) => votes + 1);
     setVotesUpdating(true);
@@ -97,7 +72,7 @@ const ArticlePage = () => {
       </p>
       <p>Article id: {article.article_id}</p>
       <Link to={`/commentspage/${article.article_id}`}>
-        <button>{numComments} COMMENTS</button>
+        <button>{article.comment_count} COMMENTS</button>
       </Link>
       <p></p>
       <button onClick={handleVotes} disabled={votesUpdating}>
