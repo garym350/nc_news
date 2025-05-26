@@ -3,6 +3,7 @@ import Header from "./Header";
 import ncNewsAPI from "../api";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ArticleCard from "./ArticleCard";
 
 const TopicsPage = () => {
   const [topics, setTopics] = useState([]);
@@ -20,7 +21,6 @@ const TopicsPage = () => {
       .get("api/topics")
       .then((response) => {
         setTopics([...response.data.topics,{"slug":"all"}]);
-        console.log("TOPICS LOADED -->", response.data.topics);
         setLoadingTopics(false);
       })
       .catch((err) => {
@@ -75,17 +75,18 @@ const TopicsPage = () => {
 
       <p style={{fontWeight: "bold"}}>Articles for {topic}</p>
 
-      <Link to={`/topics/${topic}/`}>/topics/{topic}/</Link>
+      <Link to={`/topics/${topic}/`}>
+      <button>URL: /topics/{topic}/</button>
+      </Link>
 
       <div>
-        <ul>
-            {articles.map((article)=>(
-                <li key={ article.article_id }>Title: {article.title}
-                </li>
-            )
-            )
-            }
-        </ul>
+      <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
+  {articles.map((article) => (
+    <li>
+      <ArticleCard article={article}/>
+    </li>
+  ))}
+</ul>
       </div>
     </>
   );

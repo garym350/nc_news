@@ -1,18 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import ncNewsAPI from "../api";
 import CommentCard from "./CommentCard";
 import ArticleCard from "./ArticleCard";
-import Header from "./Header"
-import { useContext } from "react";
+import Header from "./Header";
 import { UserContext } from "../Contexts/UserContext";
 
 const CommentList = ({ article_id }) => {
   const { user } = useContext(UserContext);
+
   const [commentsLoading, setCommentsLoading] = useState(true);
   const [articleLoading, setArticleLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [comments, setComments] = useState(false);
-  const [article, setArticle] = useState(null)
+  const [comments, setComments] = useState([]);
+  const [article, setArticle] = useState(null);
+  const [commentAdded, setCommentAdded] = useState(false);
+  const [commentDeleted, setCommentDeleted] = useState(false);
+  const [commentBeingDeletedId, setCommentBeingDeletedId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openCommentFormId, setOpenCommentFormId] = useState(null);
 
   useEffect(() => {
     ncNewsAPI
@@ -25,9 +30,9 @@ const CommentList = ({ article_id }) => {
         setCommentsLoading(false);
         setError(err);
       });
-  }, [article_id]); 
+  }, [article_id]);
 
-
+  
   useEffect(() => {
     ncNewsAPI
       .get(`api/articles/${article_id}`)
@@ -39,59 +44,100 @@ const CommentList = ({ article_id }) => {
         setArticleLoading(false);
         setError(err);
       });
-  }, [article_id]); 
+  }, [article_id]);
 
-  if (commentsLoading) {
-    return <p style={{ color: "amber" }}>"Loading comments..."</p>;
-  }
+ 
+  useEffect(() => {
+    if (commentAdded) {
+      const timer = setTimeout(() => {
+        setCommentAdded(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [commentAdded]);
 
-  if (articleLoading) {
-    return <p style={{ color: "amber" }}>"Loading articles..."</p>;
-  }
+  
+  useEffect(() => {
+    if (commentDeleted) {
+      const timer = setTimeout(() => {
+        setCommentDeleted(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [commentDeleted]);
 
-  if (error) {
-    return <p style={{ color: "red" }}>ERROR LOADING...{String(error)}</p>;
-  }
-
-
-const handleCommentDelete = (comment_id) => {
-  ncNewsAPI
-    .delete(`api/comments/${comment_id}`)
-    .then(() => {
-      setComments((currComments) =>
-        currComments.filter((comment) => comment.comment_id !== comment_id)
-      );
-    })
-    .catch((err) => {
-      setError(err);
-    });
-};
-
-const handleCommentSubmit = (newComment) => {
-   ncNewsAPI
-    .post(`api/articles/${article_id}/comments`,{"username": user.username, "body": newComment} )
-    .then((res)=>{
-      setComments((curComments)=>[res.data.comment, ...curComments])
+  const handleCommentDelete = (comment_id) => {
+    setCommentBeingDeletedId(comment_id);
+    ncNewsAPI
+      .delete(`api/comments/${comment_id}`)
+      .then(() => {
+        setComments((currComments) =>
+          currComments.filter((comment) => comment.comment_id !== comment_id)
+        );
+        setCommentDeleted(true);
+        if (openCommentFormId === comment_id) {
+          setOpenCommentFormId(null);
+        }
       })
-    .catch((err)=>{
-      console.log("ERROR")
-    })
-  }
+      .catch((err) => {
+        setError(err);
+      })
+      .finally(() => {
+        setCommentBeingDeletedId(null);
+      });
+  };
+
+  const handleCommentSubmit = (newComment, comment_id) => {
+    setIsSubmitting(true);
+    ncNewsAPI
+      .post(`api/articles/${article_id}/comments`, {
+        username: user.username,
+        body: newComment,
+      })
+      .then((res) => {
+        setComments((curComments) => [res.data.comment, ...curComments]);
+        setCommentAdded(true);
+        setOpenCommentFormId(null);
+      })
+      .catch((err) => {
+        setError(err);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  };
+
+  const toggleCommentForm = (comment_id) => {
+    setOpenCommentFormId((prev) => (prev === comment_id ? null : comment_id));
+  };
+
+  if (commentsLoading) return <p style={{ color: "orange" }}>Loading comments...</p>;
+  if (articleLoading) return <p style={{ color: "orange" }}>Loading article...</p>;
+  if (error) return <p style={{ color: "red" }}>ERROR: {String(error)}</p>;
 
   return (
     <>
-    <Header />
+      <Header />
       <h2>Comment List for Article "{article.title}"</h2>
-      <ArticleCard article={article}/>
+      <ArticleCard article={article} />
       <ul style={{ listStyleType: "none", padding: 0 }}>
         {comments.map((comment) => (
           <li key={comment.comment_id} className="list">
-            <CommentCard comment={comment}
-                        onDelete={handleCommentDelete}
-                        onSubmit={handleCommentSubmit}/>
+            <CommentCard
+              comment={comment}
+              onDelete={handleCommentDelete}
+              onSubmit={handleCommentSubmit}
+              isDeleting={commentBeingDeletedId === comment.comment_id}
+              isSubmitting={isSubmitting}
+              showForm={openCommentFormId === comment.comment_id}
+              onToggleForm={() => toggleCommentForm(comment.comment_id)}
+            />
+            {commentAdded && <p style={{ color: "green", fontSize: "18px" }}>✅ COMMENT ADDED</p>}
+            {commentDeleted && <p style={{ color: "red", fontSize: "18px" }}>❌ COMMENT DELETED</p>}
           </li>
         ))}
       </ul>
+     
     </>
   );
 };

@@ -1,15 +1,18 @@
 import "../../src/App.css";
 import Header from "./Header";
-import ArticleCard from "./ArticleCard";
 
-function Home({ article }) {
+function Home() {
  
   return (
     <div>
       <Header />
-      <h2 className="mb-4 text-primary">Welcome to the News App!</h2>
-      <div className="list-group">
-        <ArticleCard article={article}/>
+      <h2>Welcome to the News App!</h2>
+      <div>
+        {/* <img
+          src="/images/home page image.png"
+          alt="Home Page Image"
+          className="home-page-logo"
+        /> */}
       </div>
     </div>
   );
