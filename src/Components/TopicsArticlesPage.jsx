@@ -2,6 +2,7 @@ import Header from "./Header"
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import ncNewsAPI from "../api";
+import ArticleCard from "../Components/ArticleCard"
 
 const TopicsArticlesPage = () => {
 
@@ -20,7 +21,6 @@ const {topic} = useParams();
     ncNewsAPI
      .get("api/articles", { params: { topic, order: sortOrder, sortBy: sortQuery } })
       .then((res) => {
-         console.error("SUCESSFULLY FETCHED DATA ", topic, "<==topic");
         setArticles(res.data.articles);
         setLoading(false);
       })
@@ -44,9 +44,9 @@ const {topic} = useParams();
     <div>
       <Header />
       <p></p>
-      <p style={{color: "red"}}>ARTICLES FOR TOPIC: {topic}</p>
-      <div>
-Sort By: 
+      <p style={{ fontWeight:"bold" }}>ARTICLES FOR TOPIC: {topic}</p>
+      <div style={{ fontSize:"13px"}}>
+Sort By:{" "}
         <select
         onChange={(e) => setSortQuery(e.target.value)}
         value={sortQuery}
@@ -57,7 +57,8 @@ Sort By:
           </option>
         ))}
       </select>
-Order:
+
+{" "}{" "}{" "}Order:{" "}
       <select
         onChange={(e) => setSortOrder(e.target.value)}
         value={sortOrder}
@@ -68,17 +69,13 @@ Order:
           </option>
         ))}
       </select>
+      <br /><br />
       
-        <ul>
+        <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
           {articles.map((article) => {
-            const dateObj = new Date(article.created_at);
-            const ukDate = dateObj.toLocaleDateString("en-GB");
             return(
             <li key={article.article_id}>
-              Title: {article.title}<br />
-              Date: {ukDate}<br />
-              Votes: {article.votes}<br />
-              Comments: {article.comment_count}
+              <ArticleCard article={article} />
             </li>
           );
           })}
